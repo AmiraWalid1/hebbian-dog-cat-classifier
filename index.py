@@ -27,7 +27,7 @@ def upload_action():
         img_tk = ImageTk.PhotoImage(img)
 
         # Create a label with the image and pack it into the window
-        lbl = Label(frame1, image=img_tk)
+        lbl = Label(frame2, image=img_tk)
         lbl.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
         lbl.pack()
     except UnidentifiedImageError:
@@ -47,32 +47,32 @@ if __name__ == "__main__":
     window.resizable(0, 0)
 
     # Create two frames
-    frame1 = Frame(window, bg="#EEF8D9")
-    frame2 = Frame(window, bg="#EEF8D9")
+    frame1 = Frame(window,width=400, height=499, bg="#EEF8D9")
+    frame2 = Frame(window,width=400, height=200, bg="#EEF8D9")
 
     # Pack the frames to divide the window
-    frame1.pack(side=RIGHT)
-    frame2.pack(side=LEFT)
+    frame1.place(relx=0, y=30)
+    frame2.place(relx=0.5, rely=0.4)
 
     # Create a label and pack it into the window
-    HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack(fill=X)
+    HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack()
     # Create a Hebbian model button and pack it into the frame1
-    hebbianModeButton = Button(frame1, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10").pack(padx=120)
+    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10").pack()
 
     # Create an upload button and pack it into the frame1
-    btn = Button(frame1, text='upload', fg="black", bg="#81B774", width=10, font="10", command=lambda: upload_action()).pack(padx=100)
+    btn = Button(frame2, text='upload', fg="black", bg="#81B774", width=10, font="10", command=lambda: upload_action()).pack()
 
     # Open, resize, and display a Dog image
     imgDog = Image.open('./photos/Dog.jpeg')
     resize_image_Dog = imgDog.resize((200, 200))
     imgD = ImageTk.PhotoImage(resize_image_Dog)
-    lblCat = Label(frame2, image=imgD).pack(pady=20, padx=30)
+    lblCat = Label(frame1, image=imgD).pack(pady=20, padx=30)
 
     # Open, resize, and display a cat image
     imgCat = Image.open('./photos/Cat.jpeg')
     resize_image_cat = imgCat.resize((200, 200))
     imgC = ImageTk.PhotoImage(resize_image_cat)
-    lblCat = Label(frame2, image=imgC).pack(pady=1, padx=30)
+    lblCat = Label(frame1, image=imgC).pack(pady=0, padx=30)
 
     # Start the main event loop
     window.mainloop()
