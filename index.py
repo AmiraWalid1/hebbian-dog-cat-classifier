@@ -29,7 +29,7 @@ def upload_action():
         # Create a label with the image and pack it into the window
         lbl = Label(frame2, image=img_tk)
         lbl.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
-        lbl.pack()
+        lbl.pack(pady=10)
     except UnidentifiedImageError:
         messagebox.showinfo(title='Upload Error',
                             message='Image could not be read, Please sure the selected is an image file.')
@@ -52,15 +52,18 @@ if __name__ == "__main__":
 
     # Pack the frames to divide the window
     frame1.place(relx=0, y=30)
-    frame2.place(relx=0.5, rely=0.4)
+    frame2.place(relx=0.5, rely=0.3)
 
     # Create a label and pack it into the window
     HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack()
     # Create a Hebbian model button and pack it into the frame1
-    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10").pack()
+    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10").pack(pady=30)
+    
+    # Create upload label
+    UploadLabel = Label(frame2, text="Upload your photo", fg="black", bg="#EEF8D9", width=15, height="1", font="Arial 10").pack()
 
     # Create an upload button and pack it into the frame1
-    btn = Button(frame2, text='upload', fg="black", bg="#81B774", width=10, font="10", command=lambda: upload_action()).pack()
+    btn = Button(frame2, text='upload', fg="black", bg="#81B774", width=12, font="10", command=lambda: upload_action()).pack()
 
     # Open, resize, and display a Dog image
     imgDog = Image.open('./photos/Dog.jpeg')
