@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk, UnidentifiedImageError
-import webbrowser
+
 
 
 # Define the function to upload and process an image
