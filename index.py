@@ -8,7 +8,9 @@ from PIL import Image, ImageTk, UnidentifiedImageError
 
 
 # Define the function to upload and process an image
+lbl = None
 def upload_action():
+    global lbl 
     try:
         # Open a file dialog and get the selected image path
         img_path = askopenfilename()
@@ -25,7 +27,9 @@ def upload_action():
         img = img.resize((int(img_width), int(img_height)))
         # Convert the image to a format that Tkinter can use
         img_tk = ImageTk.PhotoImage(img)
-
+         
+        if lbl :
+            lbl.destroy()
         # Create a label with the image and pack it into the window
         lbl = Label(frame2, image=img_tk)
         lbl.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
