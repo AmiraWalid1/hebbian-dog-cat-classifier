@@ -13,8 +13,8 @@ lbl = None
 allInputs = []
 T = []
 weights = np.array([])
-text = "Type is : ???"
-text2 = "Accuracy is : ???"
+text = " This is:   "
+text2 = " Accuracy:  "
 
 # Define the function to upload and process an image
 def open_image():
@@ -36,12 +36,10 @@ def open_image():
         # Convert the image to a format that Tkinter can use
         img_tk = ImageTk.PhotoImage(img)
          
-        if lbl :
-            lbl.destroy()
         # Create a label with the image and pack it into the window
-        lbl = Label(frame2, image=img_tk)
-        lbl.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
-        lbl.pack(pady=10)
+        label1.config(image=img_tk)
+        label1.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
+        
 
         # Call the neural function
         neural(img_path)
@@ -132,7 +130,7 @@ def accuracy():
         a = np.dot(weights, p)
         counter += 1 if (a[0] >= 0 and i <= 3) or (a[0] < 0 and i > 3) else 0
 
-    text2 = f"Accuracy is :{(counter/6.0)*100}%"
+    text2 = f"Accuracy : {round((counter/6.0)*100, 2)}%"
     lbl3.config(text=text2)
     lbl3.text = text2
 
@@ -149,20 +147,16 @@ if __name__ == "__main__":
 
     # Create two frames
     frame1 = Frame(window,width=400, height=499, bg="#EEF8D9")
-    frame2 = Frame(window,width=400, height=200, bg="#EEF8D9")
+    frame2 = Frame(window,width=400, height=399, bg="#EEF8D9")
 
     # Pack the frames to divide the window
     frame1.place(relx=0, y=30)
-    frame2.place(relx=0.5, rely=0.2)
-
+    frame2.place(relx=0.4, rely=0.15)
+    
     # Create a label and pack it into the window
     HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack()
     # Create a Hebbian model button and pack it into the frame1
-    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10", command=lambda: training()).pack()
-    
-    # Create a label for the accuracy
-    lbl3 = Label(frame2, text=text2)
-    lbl3.pack(pady=30)
+    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10", command=lambda: training()).pack(pady=20)
 
     # Create upload label
     UploadLabel = Label(frame2, text="Upload your photo", fg="black", bg="#EEF8D9", width=15, height="1", font="Arial 10").pack()
@@ -181,10 +175,22 @@ if __name__ == "__main__":
     resize_image_cat = imgCat.resize((200, 200))
     imgC = ImageTk.PhotoImage(resize_image_cat)
     lblCat = Label(frame1, image=imgC).pack(pady=0, padx=30)
+    
+    # Load images (replace with your image filenames)
+    img = Image.open("photos/upload.jpeg")
+    img = img.resize((150, 150))
+    photo = ImageTk.PhotoImage(img)
+    # Create labels for images
+    label1 = Label(frame2, image=photo)
+    label1.pack(pady=10)
+
+    # Create a label for the accuracy
+    lbl3 = Label(frame2, text=text2, fg="black", bg="#A5C698", width=18, height=1, font="10", anchor=CENTER)
+    lbl3.pack(side=LEFT)
 
     # Create a label for the result
-    lbl2 = Label(frame2, text=text)
-    lbl2.pack()
+    lbl2 = Label(frame2, text=text, fg="black", bg="#A5C698", width=16, height=1, font="10", anchor=CENTER)
+    lbl2.pack(side=LEFT, padx=10, pady=10)
 
     # Start the main event loop
     window.mainloop()
