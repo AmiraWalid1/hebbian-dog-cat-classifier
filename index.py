@@ -12,6 +12,7 @@ allInputs = []
 T = []
 weights = np.array([])
 text = "Type is : ???"
+text2 = "Accuracy is : ???"
 
 # Define the function to upload and process an image
 def open_image():
@@ -73,6 +74,7 @@ def training():
         weights = np.dot(T, allInputs)
     else:
         weights = np.dot(T, np.dot(np.linalg.inv(np.dot(allInputs, allInputs.transpose())),allInputs))
+    accuracy()
 
 def flatten(image):
     new_image = []
@@ -92,6 +94,21 @@ def neural(path):
     
     lbl2.config(text=text)
     lbl2.text = text
+
+def accuracy():
+    p = []
+    counter = 0
+    for i in range(1,7):
+        img = cv2.imread(f"test/{i}.jpg",cv2.IMREAD_GRAYSCALE)
+        resized = cv2.resize(img, (300, 300), interpolation = cv2.INTER_AREA)
+        p = np.array(flatten(resized) )
+        p = p.transpose()
+        a = np.dot(weights, p)
+        counter += 1 if (a[0] >= 0 and i <= 3) or (a[0] < 0 and i > 3) else 0
+
+    text2 = f"Accuracy is :{(counter/6.0)*100}%"
+    lbl3.config(text=text2)
+    lbl3.text = text2
 
 # Main program
 if __name__ == "__main__":
@@ -115,8 +132,12 @@ if __name__ == "__main__":
     # Create a label and pack it into the window
     HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack()
     # Create a Hebbian model button and pack it into the frame1
-    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10", command=lambda: training()).pack(pady=30)
+    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10", command=lambda: training()).pack()
     
+    # Create a label for the accuracy
+    lbl3 = Label(frame2, text=text2)
+    lbl3.pack(pady=30)
+
     # Create upload label
     UploadLabel = Label(frame2, text="Upload your photo", fg="black", bg="#EEF8D9", width=15, height="1", font="Arial 10").pack()
 
