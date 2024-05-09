@@ -78,8 +78,8 @@ def training():
     Draw()
 
 def Draw():
-    cat_image_paths = [f"data2/cat.{i}.jpg" for i in range(10)]
-    dog_image_paths = [f"data2/dog.{i}.jpg" for i in range(10)]
+    cat_image_paths = [f"data2/cat.{i}.jpg" for i in range(5)]
+    dog_image_paths = [f"data2/dog.{i}.jpg" for i in range(5)]
     cat_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in cat_image_paths]
     dog_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in dog_image_paths]
 
