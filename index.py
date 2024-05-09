@@ -6,6 +6,8 @@ from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk, UnidentifiedImageError
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 lbl = None
 allInputs = []
@@ -75,7 +77,31 @@ def training():
     else:
         weights = np.dot(T, np.dot(np.linalg.inv(np.dot(allInputs, allInputs.transpose())),allInputs))
     accuracy()
+    Draw()
 
+def Draw():
+    cat_image_paths = [f"data2/cat.{i}.jpg" for i in range(10)]
+    dog_image_paths = [f"data2/dog.{i}.jpg" for i in range(10)]
+    cat_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in cat_image_paths]
+    dog_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in dog_image_paths]
+
+# Create a 2x5 grid for displaying images
+    plt.figure(figsize=(10, 4))
+    for i in range(10):
+       plt.subplot(2, 5, i + 1)
+       if i < 5:
+          plt.imshow(cat_images[i], cmap='gray')
+          plt.title(f"Cat {i}")
+       else:
+          plt.imshow(dog_images[i - 5], cmap='gray')
+          plt.title(f"Dog {i - 5}")
+    plt.axis('off')
+
+    plt.suptitle("Training Images: Cats and Dogs")
+    plt.tight_layout()
+    plt.show()
+    
+    
 def flatten(image):
     new_image = []
     for row in image:
