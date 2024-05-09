@@ -4,13 +4,18 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk, UnidentifiedImageError
+import cv2
+import numpy as np
 
-
+lbl = None
+allInputs = []
+T = []
+weights = np.array([])
+text = "Type is : ???"
 
 # Define the function to upload and process an image
-lbl = None
-def upload_action():
-    global lbl 
+def open_image():
+    global lbl, text
     try:
         # Open a file dialog and get the selected image path
         img_path = askopenfilename()
@@ -19,7 +24,7 @@ def upload_action():
         img_width, img_height = img.size
 
         # Resize the image so that its width and height are no more than 100 pixels.
-        while img_width > 100 and img_height > 100:
+        while img_width > 150 and img_height > 150:
             img_width *= .99
             img_height *= .99
 
@@ -34,10 +39,59 @@ def upload_action():
         lbl = Label(frame2, image=img_tk)
         lbl.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
         lbl.pack(pady=10)
+
+        # Call the neural function
+        neural(img_path)
     except UnidentifiedImageError:
         messagebox.showinfo(title='Upload Error',
                             message='Image could not be read, Please sure the selected is an image file.')
 
+def orthonormal(pp):
+    for i in range(len(pp)):
+        for j in range(len(pp[0])):
+            if (i==j and pp[i][j] != 1) or (i != j and pp[i][j]!=0):
+                return False
+            
+    return True
+
+def training():
+    global weights, T, allInputs
+    S = 1
+    for i in range(10):
+        allInputs.append(flatten(cv2.imread(f"data2/cat.{i}.jpg",cv2.IMREAD_GRAYSCALE)) )
+        T.append([1 for _ in range(S)])
+        allInputs.append(flatten(cv2.imread(f"data2/dog.{i}.jpg",cv2.IMREAD_GRAYSCALE)) )
+        T.append([-1 for _ in range(S)])
+
+    allInputs = np.array(allInputs)
+    T = np.array(T).transpose()
+    
+    numP =  len(allInputs)
+    R = len(allInputs[0])
+    
+    if orthonormal(allInputs):
+        weights = np.dot(T, allInputs)
+    else:
+        weights = np.dot(T, np.dot(np.linalg.inv(np.dot(allInputs, allInputs.transpose())),allInputs))
+
+def flatten(image):
+    new_image = []
+    for row in image:
+        for el in row:
+            new_image.append(-1 if el<128 else 1)
+    return new_image
+
+def neural(path):
+    global weights, text
+    img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
+    resized = cv2.resize(img, (300, 300), interpolation = cv2.INTER_AREA)
+    p = np.array(flatten(resized) )
+    p = p.transpose()
+    a = np.dot(weights, p)
+    text = "Type is : Cat" if a[0] >= 0 else "Type is : Dog"
+    
+    lbl2.config(text=text)
+    lbl2.text = text
 
 # Main program
 if __name__ == "__main__":
@@ -56,18 +110,18 @@ if __name__ == "__main__":
 
     # Pack the frames to divide the window
     frame1.place(relx=0, y=30)
-    frame2.place(relx=0.5, rely=0.3)
+    frame2.place(relx=0.5, rely=0.2)
 
     # Create a label and pack it into the window
     HebianLabel = Label(window, text="Hebbian", fg="black", bg="#B4D3AC",  width="800", height="1", font="Arial 15 bold").pack()
     # Create a Hebbian model button and pack it into the frame1
-    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10").pack(pady=30)
+    hebbianModeButton = Button(frame2, text="Hebbian model", fg="black", bg="#81B774", width=15, font="10", command=lambda: training()).pack(pady=30)
     
     # Create upload label
     UploadLabel = Label(frame2, text="Upload your photo", fg="black", bg="#EEF8D9", width=15, height="1", font="Arial 10").pack()
 
     # Create an upload button and pack it into the frame1
-    btn = Button(frame2, text='upload', fg="black", bg="#81B774", width=12, font="10", command=lambda: upload_action()).pack()
+    btn = Button(frame2, text='upload', fg="black", bg="#81B774", width=12, font="10", command=lambda: open_image()).pack()
 
     # Open, resize, and display a Dog image
     imgDog = Image.open('./photos/Dog.jpeg')
@@ -80,6 +134,10 @@ if __name__ == "__main__":
     resize_image_cat = imgCat.resize((200, 200))
     imgC = ImageTk.PhotoImage(resize_image_cat)
     lblCat = Label(frame1, image=imgC).pack(pady=0, padx=30)
+
+    # Create a label for the result
+    lbl2 = Label(frame2, text=text)
+    lbl2.pack()
 
     # Start the main event loop
     window.mainloop()
