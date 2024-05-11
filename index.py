@@ -132,7 +132,7 @@ def accuracy():
     accuracy_percentage = round((counter / 6.0) * 100, 2)
     sizes = [accuracy_percentage, 100 - accuracy_percentage]
     colors = ['#50C878', '#D2042D']
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(5, 4))
     plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
     plt.title('Accuracy Pie Chart')
     plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
