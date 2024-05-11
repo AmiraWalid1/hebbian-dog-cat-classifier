@@ -180,7 +180,17 @@ if __name__ == "__main__":
     window = Tk()
     # Configure the window
     window.configure(bg="#EEF8D9")
-    window.geometry("800x500")
+
+    width = 800
+    height = 500
+    # get screen width and height
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    # calculate position x and y coordinates
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+    window.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    
     window.title("Who am I 👀️")
     window.resizable(height=None, width=None)
     window.resizable(0, 0)
