@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-# Import necessary modules
+'''
+This Python script uses the Tkinter library to create a GUI application
+that classifies images as either a cat or a dog using a Hebbian learning model.
+'''
 from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
@@ -8,16 +11,20 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-lbl = None
+# Global variables
 allInputs = []
 T = []
 weights = np.array([])
 text = " This is:   "
 text2 = " Accuracy:  "
 
-# Define the function to upload and process an image
+
 def open_image():
-    global lbl, text
+    '''
+    This function opens an image file selected by the user, resizes the image,
+    and displays it in the GUI. It also handles exceptions for unidentified images.
+    '''
+    global text
     try:
         # Open a file dialog and get the selected image path
         img_path = askopenfilename()
@@ -33,51 +40,63 @@ def open_image():
         # Convert the image to a format that Tkinter can use
         img_tk = ImageTk.PhotoImage(img)
         # Create a label with the image and pack it into the window
-        label1.config(image=img_tk)
-        label1.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
+        lbl1.config(image=img_tk)
+        lbl1.image = img_tk  # Keep a reference to the image to prevent it from being garbage collected
         # Call the neural function
         neural(img_path)
     except UnidentifiedImageError:
         messagebox.showinfo(title='Upload Error',
                             message='Image could not be read, Please sure the selected is an image file.')
 
+
 def orthonormal(pp):
+    '''  This function checks if the input matrix is orthonormal. '''
     for i in range(len(pp)):
         for j in range(len(pp[0])):
-            if (i==j and pp[i][j] != 1) or (i != j and pp[i][j]!=0):
+            if (i == j and pp[i][j] != 1) or (i != j and pp[i][j] != 0):
                 return False
-            
     return True
 
+
 def training():
+    '''
+    This function trains the Hebbian model using images of cats and dogs.
+    It reads the images, flattens them into 1D arrays, and stores them in a list.
+    It then calculates the weights for the Hebbian model.
+    '''
     global weights, T, allInputs
     S = 1
     for i in range(10):
-        allInputs.append(flatten(cv2.imread(f"data2/cat.{i}.jpg",cv2.IMREAD_GRAYSCALE)) )
+        allInputs.append(flatten(cv2.imread(f"data2/cat.{i}.jpg", cv2.IMREAD_GRAYSCALE)))
         T.append([1 for _ in range(S)])
-        allInputs.append(flatten(cv2.imread(f"data2/dog.{i}.jpg",cv2.IMREAD_GRAYSCALE)) )
+        allInputs.append(flatten(cv2.imread(f"data2/dog.{i}.jpg", cv2.IMREAD_GRAYSCALE)))
         T.append([-1 for _ in range(S)])
 
     allInputs = np.array(allInputs)
     T = np.array(T).transpose()
-    
-    numP =  len(allInputs)
+
+    numP = len(allInputs)
     R = len(allInputs[0])
-    
+
     if orthonormal(allInputs):
         weights = np.dot(T, allInputs)
     else:
-        weights = np.dot(T, np.dot(np.linalg.inv(np.dot(allInputs, allInputs.transpose())),allInputs))
+        weights = np.dot(T, np.dot(np.linalg.inv(np.dot(allInputs, allInputs.transpose())), allInputs))
     accuracy()
-   # Draw()
+    # draw()
 
-""" def Draw():
+
+""" def draw():
+    '''
+    This function is designed to visualize the training images
+    of cats and dogs used in the Hebbian learning model.
+    '''
     cat_image_paths = [f"data2/cat.{i}.jpg" for i in range(5)]
     dog_image_paths = [f"data2/dog.{i}.jpg" for i in range(5)]
     cat_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in cat_image_paths]
     dog_images = [cv2.imread(path, cv2.IMREAD_GRAYSCALE) for path in dog_image_paths]
 
-# Create a 2x5 grid for displaying images
+    # Create a 2x5 grid for displaying images
     plt.figure(figsize=(10, 4))
     for i in range(10):
        plt.subplot(2, 5, i + 1)
@@ -92,39 +111,52 @@ def training():
     plt.suptitle("Training Images: Cats and Dogs")
     plt.tight_layout()
     plt.show() """
-    
-    
+
+
 def flatten(image):
+    '''
+    This function takes an image and flattens it into a 1D array.
+    It also converts the pixel values to either -1 or 1 based on a threshold.
+    '''
     new_image = []
     for row in image:
         for el in row:
-            new_image.append(-1 if el<128 else 1)
+            new_image.append(-1 if el < 128 else 1)
     return new_image
 
+
 def neural(path):
+    '''
+    This function takes the path of an image as input, reads the image, resizes it,
+    flattens it, and then uses the Hebbian model to classify the image as either a cat or a dog.
+    '''
     global weights, text
-    img = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
-    resized = cv2.resize(img, (300, 300), interpolation = cv2.INTER_AREA)
-    p = np.array(flatten(resized) )
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    resized = cv2.resize(img, (300, 300), interpolation=cv2.INTER_AREA)
+    p = np.array(flatten(resized))
     p = p.transpose()
     a = np.dot(weights, p)
     text = "Type is : Cat" if a[0] >= 0 else "Type is : Dog"
-    
+
     lbl2.config(text=text)
     lbl2.text = text
 
+
 def accuracy():
+    '''
+    This function calculates the accuracy of the Hebbian model by comparing the model’s predictions
+    with the actual labels of a set of test images. It also creates a pie chart to visualize the accuracy.
+    '''
     p = []
     counter = 0
-    for i in range(1,7):
-        img = cv2.imread(f"test/{i}.jpg",cv2.IMREAD_GRAYSCALE)
-        resized = cv2.resize(img, (300, 300), interpolation = cv2.INTER_AREA)
-        p = np.array(flatten(resized) )
+    for i in range(1, 7):
+        img = cv2.imread(f"test/{i}.jpg", cv2.IMREAD_GRAYSCALE)
+        resized = cv2.resize(img, (300, 300), interpolation=cv2.INTER_AREA)
+        p = np.array(flatten(resized))
         p = p.transpose()
         a = np.dot(weights, p)
         counter += 1 if (a[0] >= 0 and i <= 3) or (a[0] < 0 and i > 3) else 0
-    
-    
+
     text2 = f"Accuracy : {round((counter/6.0)*100, 2)}%"
     lbl3.config(text=text2)
     lbl3.text = text2
@@ -141,8 +173,9 @@ def accuracy():
     plt.savefig('accuracy_pie_chart.png')  # Save to a file
     plt.show()  # Display the chart (uncomment this line if you want to see it interactively)
 
-# Main program
+
 if __name__ == "__main__":
+    ''' Main Program. '''
     # Create the main window
     window = Tk()
     # Configure the window
@@ -152,8 +185,8 @@ if __name__ == "__main__":
     window.resizable(height=None, width=None)
     window.resizable(0, 0)
     # Create two frames
-    frame1 = Frame(window,width=400, height=499, bg="#EEF8D9")
-    frame2 = Frame(window,width=400, height=399, bg="#EEF8D9")
+    frame1 = Frame(window, width=400, height=499, bg="#EEF8D9")
+    frame2 = Frame(window, width=400, height=399, bg="#EEF8D9")
     # Pack the frames to divide the window
     frame1.place(relx=0, y=30)
     frame2.place(relx=0.4, rely=0.15)
@@ -180,8 +213,8 @@ if __name__ == "__main__":
     img = img.resize((150, 150))
     photo = ImageTk.PhotoImage(img)
     # Create labels for images
-    label1 = Label(frame2, image=photo)
-    label1.pack(pady=10)
+    lbl1 = Label(frame2, image=photo)
+    lbl1.pack(pady=10)
     # Create a label for the accuracy
     lbl3 = Label(frame2, text=text2, fg="black", bg="#A5C698", width=18, height=1, font="10", anchor=CENTER)
     lbl3.pack(side=LEFT)
