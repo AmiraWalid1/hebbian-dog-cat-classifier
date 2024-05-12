@@ -1,6 +1,5 @@
 # Image Classifier using Hebbian Learning
-
-This Python script uses the Tkinter library to create a GUI application that classifies images as either a cat or a dog using a Hebbian learning model.
+This application, powered by Hebbian Learning, classifies images as cats 🐱 or dogs 🐶.
 
 ## Features
 
