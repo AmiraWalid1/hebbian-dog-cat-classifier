@@ -6,10 +6,11 @@ This Python script uses the Tkinter library to create a GUI application that cla
 
 ## Features
 
-- **Image Upload**: Users can upload an image using the 'upload' button. The image is then processed and classified as either a cat or a dog.
-- **Hebbian Model**: The script uses a Hebbian learning model to classify the images. The model is trained on a set of images of cats and dogs.
-- **Accuracy Calculation**: The script calculates the accuracy of the model by comparing the model's predictions with the actual labels of a set of test images.
 - **GUI**: The script uses Tkinter to create a graphical user interface (GUI) for the application. The GUI includes buttons for uploading images and initiating the Hebbian model, labels to display the uploaded image and the classification result, and a pie chart to display the accuracy of the model.
+- **Hebbian Model**: The script uses a Hebbian learning model to classify the images. The model is trained on a set of images of cats and dogs.
+- **Image Upload**: Users can upload an image using the 'upload' button. The image is then processed and classified as either a cat or a dog.
+- **Accuracy Calculation**: The script calculates the accuracy of the model by comparing the model's predictions with the actual labels of a set of test images.
+
 
 ## Usage
 
