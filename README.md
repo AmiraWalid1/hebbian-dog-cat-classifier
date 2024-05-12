@@ -1,5 +1,3 @@
-Sure, here's a brief description of your script:
-
 # Image Classifier using Hebbian Learning
 
 This Python script uses the Tkinter library to create a GUI application that classifies images as either a cat or a dog using a Hebbian learning model.
